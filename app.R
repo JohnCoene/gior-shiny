@@ -44,6 +44,18 @@ ui <- fluidPage(
 
 server <- function(input, output, session){
   
+  cns <- unique(country_data$from)
+  
+  new_data <- function(){
+    data.frame(
+      from = sample(cns, 750, replace = TRUE),
+      to = sample(cns, 750, replace = TRUE),
+      value = runif(750, 100165, 7995879)
+    ) %>% 
+      dplyr::group_by(from, to) %>% 
+      dplyr::summarise(value = sum(value))
+  }
+  
   #plot
   output$gior <- renderGior({
     country_data %>%
@@ -68,7 +80,7 @@ server <- function(input, output, session){
   
   observeEvent(input$add, {
     giorProxy("gior") %>%
-      g_data_p(country_data, from, to, value)
+      g_data_p(new_data(), from, to, value)
   })
   
   # callback
