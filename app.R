@@ -28,7 +28,8 @@ ui <- fluidPage(
     column(
       2,
       h5("Proxies"), br(),
-      actionButton("add", "add"), br(), br(),
+      p("Change or clear the data"),
+      actionButton("add", "change"), br(), br(),
       actionButton("clear", "clear"), br(), br(),
       uiOutput("sw")
     ),
@@ -59,7 +60,7 @@ server <- function(input, output, session){
   #plot
   output$gior <- renderGior({
     country_data %>%
-      gior() %>%
+      gior(init.country = "PE") %>%
       g_data(from, to, value)
   })
   
@@ -71,6 +72,19 @@ server <- function(input, output, session){
   observeEvent(input$selectCountry, {
     giorProxy("gior") %>%
       g_switch_p(input$selectCountry)
+  })
+  
+  observeEvent(input$rel_rows_selected, {
+    if(!is.null(input$rel_rows_selected)){
+      x <- input$gior_related %>% 
+        dplyr::slice(input$rel_rows_selected) %>% 
+        dplyr::pull(ISOCode)
+      
+      print(x)
+      
+      giorProxy("gior") %>%
+        g_switch_p(x)
+    }
   })
   
   observeEvent(input$clear, {
@@ -89,7 +103,7 @@ server <- function(input, output, session){
   })
   
   output$rel <- renderDT({
-    DT::datatable(input$gior_related)
+    DT::datatable(input$gior_related, selection = "single")
   })
 }
 
