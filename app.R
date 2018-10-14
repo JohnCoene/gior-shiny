@@ -6,7 +6,7 @@ data("country_data")
 
 ui <- fluidPage(
   title = "gior",
-  theme = shinythemes::shinytheme("paper"),
+  theme = shinythemes::shinytheme("lumen"),
   fluidRow(
     column(
       8,
@@ -79,8 +79,6 @@ server <- function(input, output, session){
       x <- input$gior_related %>% 
         dplyr::slice(input$rel_rows_selected) %>% 
         dplyr::pull(ISOCode)
-      
-      print(x)
       
       giorProxy("gior") %>%
         g_switch_p(x)
