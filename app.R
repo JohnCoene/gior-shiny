@@ -6,7 +6,10 @@ data("country_data")
 
 ui <- fluidPage(
   title = "gior",
-  theme = shinythemes::shinytheme("lumen"),
+  theme = shinythemes::shinytheme("cyborg"),
+  tags$footer(
+    tags$style("tbody{color: #000!important;}")
+  ),
   fluidRow(
     column(
       8,
@@ -61,7 +64,7 @@ server <- function(input, output, session){
   output$gior <- renderGior({
     country_data %>%
       gior(init.country = "PE") %>%
-      g_data(from, to, value)
+      g_data(from, to, value) 
   })
   
   #proxies
